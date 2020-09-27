@@ -1,0 +1,27 @@
+{
+  "name": "kriegsspiel",
+  "version": "1.0.0",
+  "description": "Guy Debord's Game of War",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mknurs/kriegsspiel.git"
+  },
+  "author": "mknurs",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mknurs/kriegsspiel/issues"
+  },
+  "homepage": "https://github.com/mknurs/kriegsspiel#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
