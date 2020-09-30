@@ -19,6 +19,7 @@
   "homepage": "https://github.com/mknurs/kriegsspiel#readme",
   "dependencies": {
     "express": "^4.17.1",
+    "qs": "^6.9.4",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {

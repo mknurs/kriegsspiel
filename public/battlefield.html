@@ -12,10 +12,25 @@
     <h1>Battlefield</h1>
   </header>
   <main>
+    <p id="stateInfo">
+      <span id="modeInfo"></span>
+      <span id="turnInfo"></span>
+    </p>
     <canvas width="1500" height="1200"></canvas>
+    <p id="playerInfo">
+      <span id="userInfo"></span>
+      <span id="extraUserInfo"></span>
+      <button id="nextBtn"></button>
+    </p>
   </main>
   <footer>
   </footer>
+
+  <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.2/qs.min.js"
+      integrity="sha256-TDxXjkAUay70ae/QJBEpGKkpVslXaHHayklIVglFRT4="
+      crossorigin="anonymous"
+  ></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="js/main.js"></script>
 </body>
