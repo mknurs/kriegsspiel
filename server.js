@@ -65,14 +65,13 @@ function newGameState() {
 }
 
 function emitStateToRoom(state, room) {
-  // for (let i = 0; i < ROWS; i++) {
-  //   for (let j = 0; j < COLS; j++) {
-  //     state.board[i][j].online = {...(new Array())};
-  //   }
-  // }
-  // (re)calculate communications
-  let id = state.players[0].id;
-  radiateLines(id, state)
+  // calculate comms
+  state.players.forEach(
+    (player) => {
+      let id = player.id;
+      radiateLines(id, state)
+    }
+  )
   // radiateArsenals(state)
   // calculate aggregate stats
   aggregateStats(state)

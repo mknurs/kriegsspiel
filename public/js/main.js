@@ -30,8 +30,8 @@ client.on("state", handleState);
 function handleState(state) {
   state = JSON.parse(state);
   roomState = state;
-  player = state.players.find(player => player.name === username);
-  enemy = state.players.find(player => player.name != username);
+  player = state.players.find(player => player.id === client.id);
+  enemy = state.players.find(player => player.id != client.id);
   paintGame(state);
   writeGame(state);
 }
@@ -41,10 +41,14 @@ Canvas
 */
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+ctx.save();
 const cell = {
   width: canvas.width / COLS,
   height: canvas.height / ROWS,
 };
+
+// ctx.strokeStyle = "#333";
+// ctx.strokeWidth = 1;
 
 canvas.addEventListener('click', function(e) {
   getClickedCell(canvas, e)
@@ -58,13 +62,14 @@ function paintGame(state) {
     board.reverse().forEach(arr => arr.reverse());
   }
 
-  // clear
+  // clear and restore
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // draw grid
-  ctx.beginPath();
+  ctx.globalAlpha = 1;
   ctx.strokeStyle = "#333";
   ctx.strokeWidth = 1;
+  ctx.beginPath();
   for (let i = 0; i < ROWS + 1; i++) {
     ctx.moveTo(0, cell.height * i);
     ctx.lineTo(canvas.width, cell.height * i);
@@ -82,35 +87,13 @@ function paintGame(state) {
         board[i][j].online.length > 0
       ) {
         if (board[i][j].online.includes(player.id)) {
-          ctx.beginPath();
-          ctx.strokeStyle = player.color;
-          ctx.strokeWidth = 1;
-          ctx.setLineDash([1, 2])
-          
-          ctx.arc(
-            (j * cell.width) + (3/6 * cell.width),
-            (i * cell.height) + (3/6 * cell.height),
-            cell.width * 1/24,
-            0,
-            Math.PI * 2,
-            true
-          );
-          ctx.stroke();
+          drawOnline(i, j, cell, player);
         }
         if (
           roomState.battle &&
           board[i][j].online.includes(enemy.id)
         ) {
-          ctx.strokeStyle = enemy.color;
-          ctx.beginPath();
-          ctx.arc(
-            (j * cell.width) + (3/6 * cell.width),
-            (i * cell.height) + (3/6 * cell.height),
-            cell.width * 1/12,
-            0,
-            Math.PI * 2,
-            true
-          );
+          drawOnline(i, j, cell, enemy);
         }
       }
       // draw features
@@ -240,34 +223,16 @@ function getClickedCell(canvas, event) {
 function emitBtnClick() {
   client.emit("btnClick", { username, roomname, i, j })
 }
-/*socket.on("init", handleInit);
-socket.on("playerJoin", handlePlayerJoin);
-socket.on("spectatorJoin", handleSpectatorJoin);
-socket.on("gameState", handleGameState);
 
-
-function handleInit(player) {
-
-}
-
-socket.on("playerJoin", player => {
-  gameState.playerB = player;
-  socket.emit("sendGameState", gameState)
-})
-
-socket.on("recieveGameState", gameState => {
-  gameState = gameState
-})
-// event listeners
-joinBattleBtn.addEventListener("click", joinGame)*/
-
-// join battle btn addEventListener("click", joinRoom)
-
-
-
+/*
+Drawing functions
+*/
 function drawMountain(i, j, cell) {
-  ctx.beginPath();
+  ctx.restore();
   ctx.fillStyle = "#333";
+  ctx.globalAlpha = 1;
+
+  ctx.beginPath();
   ctx.moveTo(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (11/12 * cell.height),
@@ -285,9 +250,14 @@ function drawMountain(i, j, cell) {
 };
 
 function drawMountainpass(i, j, cell) {
-  ctx.beginPath();
+  ctx.restore();
   ctx.strokeStyle = "#333";
   ctx.lineWidth = 1;
+  ctx.setLineDash([]);
+
+  ctx.globalAlpha = 1;
+
+  ctx.beginPath();
   ctx.moveTo(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (1/12 * cell.height)
@@ -324,9 +294,14 @@ function drawMountainpass(i, j, cell) {
 }
 
 function drawFort(i, j, cell) {
-  ctx.beginPath();
+  ctx.restore();
   ctx.strokeStyle = "#333";
   ctx.lineWidth = 1;
+  ctx.setLineDash([]);
+
+  ctx.globalAlpha = 1;
+
+  ctx.beginPath();
   ctx.moveTo(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (1/12 * cell.height),
@@ -344,9 +319,14 @@ function drawFort(i, j, cell) {
 }
 
 function drawArsenal(i, j, cell, color) {
-  ctx.beginPath();
+  ctx.restore();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  ctx.globalAlpha = 1;
+
+  ctx.beginPath();
   ctx.moveTo(
     (j * cell.width) + (0 * cell.width),
     (i * cell.height) + (3/6 * cell.height),
@@ -364,15 +344,21 @@ function drawArsenal(i, j, cell, color) {
 }
 
 function drawRelay(i, j, cell, color) {
-  // unit rect
+  ctx.restore();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  ctx.globalAlpha = 1;
+
+  // unit rect
   ctx.strokeRect(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (3/12 * cell.height),
     cell.width * 5/6,
     cell.height * 3/6
   );
+
   // relay
   ctx.beginPath();
   ctx.moveTo(
@@ -387,18 +373,24 @@ function drawRelay(i, j, cell, color) {
 }
 
 function drawSwiftRelay(i, j, cell, color) {
-  // unit rect
+  ctx.restore();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 1;
+
+  // unit rect
   ctx.strokeRect(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (3/12 * cell.height),
     cell.width * 5/6,
     cell.height * 3/6
   );
+
   // swift circs
   ctx.beginPath();
-  ctx.fillStyle = color;
   ctx.arc(
     (j * cell.width) + (2/6 * cell.width),
     (i * cell.height) + (4/6 * cell.height),
@@ -432,6 +424,7 @@ function drawSwiftRelay(i, j, cell, color) {
     true
   );
   ctx.fill();
+
   // relay
   ctx.beginPath();
   ctx.moveTo(
@@ -446,15 +439,21 @@ function drawSwiftRelay(i, j, cell, color) {
 }
 
 function drawInfantry(i, j, cell, color) {
-  // unit rect
+  ctx.restore();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  ctx.globalAlpha = 1;
+
+  // unit rect
   ctx.strokeRect(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (3/12 * cell.height),
     cell.width * 5/6,
     cell.height * 3/6
   );
+
   // draw infantry
   ctx.beginPath();
   ctx.strokeStyle = color;
@@ -479,19 +478,26 @@ function drawInfantry(i, j, cell, color) {
 }
 
 function drawCavalry(i, j, cell, color) {
-  // unit rect
+  ctx.restore();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  ctx.globalAlpha = 1;
+
+  // unit rect
   ctx.strokeRect(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (3/12 * cell.height),
     cell.width * 5/6,
     cell.height * 3/6
   );
+
   // draw cavalry
   ctx.beginPath();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
   ctx.moveTo(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (3/12 * cell.height)
@@ -504,18 +510,24 @@ function drawCavalry(i, j, cell, color) {
 }
 
 function drawCannon(i, j, cell, color) {
-  // unit rect
+  ctx.restore();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 1;
+
+  // unit rect
   ctx.strokeRect(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (3/12 * cell.height),
     cell.width * 5/6,
     cell.height * 3/6
   );
+
   // unit path
   ctx.beginPath();
-  ctx.fillStyle = color;
   ctx.moveTo(
     (j * cell.width) + (3/6 * cell.width),
     (i * cell.height) + (3/6 * cell.height)
@@ -532,18 +544,24 @@ function drawCannon(i, j, cell, color) {
 }
 
 function drawSwiftCannon(i, j, cell, color) {
-  // unit rect
+  ctx.restore();
   ctx.strokeStyle = color;
   ctx.lineWidth = 2;
+  ctx.setLineDash([]);
+
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 1;
+
+  // unit rect
   ctx.strokeRect(
     (j * cell.width) + (1/12 * cell.width),
     (i * cell.height) + (3/12 * cell.height),
     cell.width * 5/6,
     cell.height * 3/6
   );
+
   // swift circs
   ctx.beginPath();
-  ctx.fillStyle = color;
   ctx.arc(
     (j * cell.width) + (2/6 * cell.width),
     (i * cell.height) + (4/6 * cell.height),
@@ -577,6 +595,7 @@ function drawSwiftCannon(i, j, cell, color) {
     true
   );
   ctx.fill();
+
   // unit path
   ctx.beginPath();
   ctx.fillStyle = color;
@@ -588,6 +607,23 @@ function drawSwiftCannon(i, j, cell, color) {
     (j * cell.width) + (3/6 * cell.width),
     (i * cell.height) + (3/6 * cell.height),
     cell.width * 1/12,
+    0,
+    Math.PI * 2,
+    true
+  );
+  ctx.fill();
+}
+
+function drawOnline(i, j, cell, player) {
+  ctx.restore();
+  ctx.fillStyle = player.color;
+  ctx.globalAlpha = 0.2;
+
+  ctx.beginPath();
+  ctx.arc(
+    (j * cell.width) + (3/6 * cell.width),
+    (i * cell.height) + (3/6 * cell.height),
+    cell.width * 1/24,
     0,
     Math.PI * 2,
     true
