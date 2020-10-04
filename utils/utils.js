@@ -14,18 +14,66 @@ function distance(start, end) {
   return Math.max(i, j)
 };
 
+function inRange(start, end, range) {
+  let direction = [
+    (end.i - start.i) / (Math.abs(end.i - start.i)),
+    (end.j - start.j) / (Math.abs(end.j - start.j))
+  ];
+
+  for (let i = 1; i <= range; i++) {
+    if (
+      (start.i + (direction[0] * i) == end.i) &&
+      (start.j + (direction[1] * i) == end.j)
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+function resetStats(state) {
+  let board = state.board;
+  for (let i = 0; i < ROWS; i++) {
+    for (let j = 0; j < COLS; j++) {
+      if (board[i][j].unit) {
+        let unit = board[i][j].unit;
+        unit.moves.curr = unit.moves.init;
+      }
+    }
+  }
+}
+
+function resetOnline(state) {
+  let board = state.board;
+  for (let i = 0; i < ROWS; i++) {
+    for (let j = 0; j < COLS; j++) {
+      board[i][j].online = [];
+    }
+  }
+}
+
+function resetAggregate(state) {
+  let board = state.board;
+  for (let i = 0; i < ROWS; i++) {
+    for (let j = 0; j < COLS; j++) {
+      if (board[i][j].unit) {
+        let unit = board[i][j].unit;
+        unit.aggregateDefense = 0;
+        unit.aggregateAttack = 0;
+      }
+    }
+  }
+}
+
 function aggregateStats(state) {
   for (let i = 0; i < ROWS; i++) {
     for (let j = 0; j < COLS; j++) {
-      if (state.board[i][j].unit) {
-        let start = { i, j };
-        let unit = state.board[i][j].unit;
-        unit.aggregateDefense = unit.defense;
-        state.board[i][j].feature.defense ?
-          unit.aggregateDefense += state.board[i][j].feature.defense :
-          unit.aggregateDefense += 0;
-        unit.aggregateAttack = 0;
-        let cellsToCheck = [
+      let cell = state.board[i][j];
+      if (cell.unit) {
+        cell.unit.aggregateDefense = cell.unit.defense + (cell.feature.defense || 0);
+        cell.unit.aggregateAttack = 0;
+        let squaresToCheck = [
           [i-3,j-3],                    [i-3,j  ],                    [i-3,j+3],
                     [i-2,j-2],          [i-2,j  ],          [i-2,j+2],
                               [i-1,j-1],[i-1,j  ],[i-1,j+1],
@@ -34,61 +82,51 @@ function aggregateStats(state) {
                     [i+2,j-2],          [i+2,j  ],          [i+2,j+2],
           [i+3,j-3],                    [i+3,j  ],                    [i+3,j+3]
         ];
-
-        cellsToCheck.forEach(
-          function(cell) {
+        squaresToCheck.forEach(
+          function(val) {
             if (
-              state.board[cell[0]] != undefined &&
-              state.board[cell[0]][cell[1]] != undefined
+              state.board[val[0]] != undefined &&
+              state.board[val[0]][val[1]] != undefined
             ) {
-              let end = {
-                i: cell[0],
-                j: cell[1]
-              };
-              let nUnit = state.board[cell[0]][cell[0]].unit;
-
-              // aggregates defense
+              let square = state.board[val[0]][val[1]];
               if (
-                nUnit &&
-                nUnit.player.id == unit.player.id &&
-                nUnit.range >= distance(start, end)
+                square.unit &&
+                square.unit.player.turn == cell.unit.player.turn &&
+                square.unit.range >= distance(cell, square)
               ) {
-                unit.aggregateDefense += nUnit.defense;
+                cell.unit.aggregateDefense += square.unit.defense;
               };
-
-              // aggregate attack
               if (
-                nUnit &&
-                nUnit.player.id != unit.player.id &&
-                nUnit.range >= distance(start, end)
+                square.unit &&
+                square.unit.player.turn != cell.unit.player.turn &&
+                square.unit.range >= distance(cell, square)
               ) {
-                unit.aggregateAttack += nUnit.attack;
+                cell.unit.aggregateAttack += square.unit.attack;
               };
             };
           }
-        )
-      }
-    }
-  }
+        );
+      };
+    };
+  };
 }
 
 /*
 Communication lines
 */
 
-
-function radiateLines(id, state) {
+function radiateLines(turn, state) {
   // get positions of arsenals and relays
   let comPos = [];
   for (let i = 0; i < ROWS; i++) {
     for (let j = 0; j < COLS; j++) {
       if (
         (state.board[i][j].arsenal &&
-        state.board[i][j].arsenal.player.id == id) ||
-        (state.board[i][j].online.includes(id) &&
+        state.board[i][j].arsenal.player.turn == turn) ||
+        (state.board[i][j].online.includes(turn) &&
         state.board[i][j].unit &&
         state.board[i][j].unit.name == ("relay" || "swiftRelay") &&
-        state.board[i][j].unit.player.id == id)
+        state.board[i][j].unit.player.turn == turn)
       ) {
         comPos.push([i, j]);
       };
@@ -112,8 +150,8 @@ function radiateLines(id, state) {
           state.board[i][j] != undefined &&
           state.board[i][j].feature.traversable
         ) {
-          if (!state.board[i][j].online.includes(id)) {
-            state.board[i][j].online.push(id);
+          if (!state.board[i][j].online.includes(turn)) {
+            state.board[i][j].online.push(turn);
           };
           i += direction[0];
           j += direction[1];
@@ -139,9 +177,9 @@ function radiateLines(id, state) {
         [i+1,j-1],[i+1,  j],[i+1,j+1],
       ];
       if (
-        state.board[i][j].online.includes(id) &&
+        state.board[i][j].online.includes(turn) &&
         state.board[i][j].unit &&
-        state.board[i][j].unit.player.id == id
+        state.board[i][j].unit.player.turn == turn
       ) {
         adjecentCells.forEach(
           (val) => {
@@ -151,9 +189,9 @@ function radiateLines(id, state) {
               state.board[k] != undefined &&
               state.board[k][l] != undefined &&
               state.board[k][l].feature.traversable &&
-              !state.board[k][l].online.includes(id)
+              !state.board[k][l].online.includes(turn)
             ) {
-              state.board[k][l].online.push(id);
+              state.board[k][l].online.push(turn);
             };
           }
         );
@@ -170,7 +208,11 @@ function deselect(state) {
 
 module.exports = {
   distance,
+  inRange,
+  resetOnline,
+  resetAggregate,
+  resetStats,
   radiateLines,
   aggregateStats,
-  deselect
+  deselect,
 }

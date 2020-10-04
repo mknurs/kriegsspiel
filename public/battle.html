@@ -8,22 +8,28 @@
   <link rel="stylesheet" href="css/normalize.css" />
 </head>
 <body>
-  <header>
-    <h1>Battlefield</h1>
+  <header id="banner">
+    <h1 id="bannerInfo"></h1>
   </header>
+
   <main>
-    <p id="stateInfo">
+    <header id="stateInfo">
       <span id="modeInfo"></span>
       <span id="turnInfo"></span>
-    </p>
+    </header>
+
     <canvas width="1500" height="1200"></canvas>
-    <p id="playerInfo">
+
+    <footer id="playerInfo">
       <span id="userInfo"></span>
       <span id="extraUserInfo"></span>
+      <span id="selectedInfo"></span>
       <button id="nextBtn"></button>
-    </p>
+    </footer>
   </main>
+
   <footer>
+    <span>Report bugs: </span>
   </footer>
 
   <script

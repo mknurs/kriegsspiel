@@ -4,8 +4,6 @@ Arsenal
 class Arsenal {
   constructor(player) {
     this.name = "arsenal";
-    this.traversable = true;
-
     this.player = player;
   }
 };

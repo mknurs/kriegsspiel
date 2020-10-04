@@ -5,28 +5,17 @@ const {
   B_COLOR
 } = require("../constants");
 
+/*
+Terrain features
+*/
 const empty = {
   name: "empty",
   traversable: true,
 }
 
-let empt = {
-  feature: empty,
-  arsenal: null,
-  unit: null,
-  online: []
-}
-
 const mountain = {
   name: "mountain",
   traversable: false,
-}
-
-let mntn = {
-  feature: mountain,
-  arsenal: null,
-  unit: null,
-  online: []
 }
 
 const fortification = {
@@ -35,92 +24,261 @@ const fortification = {
   defense: 4,
 }
 
-let fort = {
-  feature: fortification,
-  arsenal: null,
-  unit: null,
-  online: []
-}
-
 const mountainPass = {
   name: "mountainPass",
   traversable: true,
   defense: 2
 }
 
-let mnps = {
-  feature: mountainPass,
-  arsenal: null,
-  unit: null,
-  online: []
+/*
+Arsenal
+*/
+class Arsenal {
+  constructor(player) {
+    this.name = "arsenal";
+    this.player = player;
+  }
+};
+
+/*
+Units
+*/
+class Relay {
+  constructor(player) {
+    this.name = "relay";
+    this.player = player;
+
+    this.moves = {
+      curr: 1,
+      init: 1,
+    };
+    this.defense = 1;
+    this.comms = true;
+
+    this.reset = () => {
+      this.moves.curr = this.moves.init;
+    }
+  }
 }
 
-const matrix = [
-/*     0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24*/
-/* 0*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 1*/[0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 2*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 3*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 4*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 5*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 6*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 7*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
-/* 8*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/* 9*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*10*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*11*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*12*/[0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*13*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*14*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*15*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*16*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*17*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*18*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-/*19*/[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
-/*
-  Map initial matrix to an object matrix
-  */
-let board = matrix.map(
-  (row, i) => row.map(
-    (cel, j) => {
-      cel == 0 ?
-      cel = { feature: empty, arsenal: null, unit: null, online: new Array(), i, j } :
-      cel == 1 ?
-      cel = { feature: fortification, arsenal: null, unit: null, online: new Array(), i, j } :
-      cel == 2 ?
-      cel = { feature: mountain, arsenal: null, unit: null, online: new Array(), i, j } :
-      cel = { feature: mountainPass, arsenal: null, unit: null, online: new Array(), i, j };
-      return cel;
+class SwiftRelay {
+  constructor(player) {
+    this.name = "swiftRelay";
+    this.player = player;
+
+    this.moves = {
+      curr: 2,
+      init: 2,
+    };
+    this.defense = 1;
+    this.comms = true;
+
+    this.reset = () => {
+      this.moves.curr = this.moves.init;
     }
-));
-// const board = matrix.map(y => y.map(x => x));
+  }
+}
 
+class Infantry {
+  constructor(player) {
+    this.name = "infantry";
+    this.player = player;
+
+    this.moves = {
+      curr: 1,
+      init: 1,
+    };
+    this.range = 2;
+    this.attack = 4;
+    this.defense = 6;
+
+    this.reset = () => {
+      this.moves.curr = this.moves.init;
+    }
+  }
+}
+
+class Cavalry {
+  constructor(player) {
+    this.name = "cavalry";
+    this.player = player;
+
+    this.moves = {
+      curr: 2,
+      init: 2
+    };
+    this.range = 2;
+    this.attack = 4;
+    this.defense = 5;
+    this.charge = true;
+
+    this.reset = () => {
+      this.moves.curr = this.moves.init;
+    }
+  }
+}
+
+class Cannon {
+  constructor(player) {
+    this.name = "cannon";
+    this.player = player;
+
+    this.moves = {
+      curr: 1,
+      init: 1
+    };
+    this.range = 3;
+    this.attack = 5;
+    this.defense = 8;
+
+    this.reset = () => {
+      this.moves.curr = this.moves.init;
+    }
+  }
+}
+
+class SwiftCannon {
+  constructor(player) {
+    this.name = "swiftCannon";
+    this.player = player;
+
+    this.moves = {
+      curr: 2,
+      init: 2
+    };
+    this.range = 3;
+    this.attack = 5;
+    this.defense = 8;
+
+    this.reset = () => {
+      this.moves.curr = this.moves.init;
+    }
+  }
+}
 
 /*
-let board = matrix.forEach(
-  (row, i) => {
-    row.forEach(
-      (cell, j) => {
-        cell;
-        cell.i = i;
-        cell.j = j;
-      }
-    )
+Players
+*/
+class Player {
+  constructor(turn, color) {
+    this.turn = turn;
+    this.color = color;
+    this.moves = 0;
+    this.attacks = 0;
+    this.units = 0;
+    this.ready = false;
   }
-)*/
+}
 
-/*class Board {
-  constructor(rows = 20, cols = 25) {
+const playerA = new Player(true, A_COLOR);
+const playerB = new Player(false, B_COLOR);
 
-    this.rows = 20;
-    this.cols = 25;
-    this.featureMatrix = featureMatrix;
-    this.arsenalMatrix = Array(this.rows).fill().map(() => Array(this.cols).fill(null));
-    this.unitMatrix = Array(this.rows).fill().map(() => Array(this.cols).fill(null));
+/*
+Board
+*/
+class Cell {
+  constructor(feature = empty, arsenal = null, unit = null, position) {
+    this.feature = feature;
+    this.arsenal = arsenal;
+    this.unit = unit;
+    this.online = new Array();
+    this.pos = { i: position.i, j: position.j}
   }
-}*/
+}
+
+// initial board (mikanovic notation*)
+const initString = 
+  "10,25." +
+  "A19,2;19,22" +
+  "B3,7;1,14" +
+  "F1,7;8,12;7,20;12,2;11,14;14,22" +
+  "M2,9;2,10;2,11;2,12;3,9;4,9;6,9;7,9;8,9;13,10;13,11;13,12;13,13;13,14;13,15;15,15;16,15;17,15" +
+  "P5,9;14,15."
+
+function makeBoard(string) {
+  let meta = string.split(".")[0];
+  let init = string.split(".")[1];
+
+  let as = init.match(/A.*?(?=[A-Z]|\.|$)/)[0]; // match A arsenals
+  let bs = init.match(/B.*?(?=[A-Z]|\.|$)/)[0]; // match B arsenals
+  let fs = init.match(/F.*?(?=[A-Z]|\.|$)/)[0]; // match Forts
+  let ms = init.match(/M.*?(?=[A-Z]|\.|$)/)[0]; // match Mountains
+  let ps = init.match(/P.*?(?=[A-Z]|\.|$)/)[0]; // match mountain Passes
+
+  let rows = meta.split(",")[0] * 2;
+  let cols = meta.split(",")[1]
+
+  let board = [...Array(rows)].map(e => Array(cols));
+
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      let pos = { i, j };
+      board[i][j] = new Cell(empty, null, null, pos);
+    }
+  }
+
+  // insert forts
+  fs = fs.substring(1);
+  fs.split(";").forEach(
+    coord => {
+      let i = coord.split(",")[0];
+      let j = coord.split(",")[1];
+      board[i][j].feature = fortification;
+    }
+  )
+
+  // insert mountains
+  ms = ms.substring(1);
+  ms.split(";").forEach(
+    coord => {
+      let i = coord.split(",")[0];
+      let j = coord.split(",")[1];
+      board[i][j].feature = mountain;
+    }
+  )
+
+  // insert mountain passes
+  ps = ps.substring(1);
+  ps.split(";").forEach(
+    coord => {
+      let i = coord.split(",")[0];
+      let j = coord.split(",")[1];
+      board[i][j].feature = mountainPass;
+    }
+  )
+
+  // insert arsenals A
+  as = as.substring(1);
+  as.split(";").forEach(
+    coord => {
+      let i = coord.split(",")[0];
+      let j = coord.split(",")[1];
+      board[i][j].arsenal = new Arsenal(playerA);
+    }
+  )
+
+  // insert arsenals B
+  bs = bs.substring(1);
+  bs.split(";").forEach(
+    coord => {
+      let i = coord.split(",")[0];
+      let j = coord.split(",")[1];
+      board[i][j].arsenal = new Arsenal(playerB);
+    }
+  )
+
+  return board;
+}
 
 module.exports = {
-  board
+  playerA,
+  playerB,
+  initString,
+  makeBoard,
+  Relay,
+  SwiftRelay,
+  Infantry,
+  Cavalry,
+  Cannon,
+  SwiftCannon
 }

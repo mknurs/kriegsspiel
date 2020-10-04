@@ -3,35 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://kontrakurs.org/themes/prolerue_theme/css/normalize.css" type="text/css">
+  <link rel="stylesheet" href="https://kontrakurs.org/themes/prolerue_theme/css/style.css" type="text/css">
   <title>War Room</title>
 </head>
+
 <body>
   <header>
-    <h1>War Room</h1>
+  <h1>War Room</h1>
   </header>
+
   <main>
+    <!-- form -->
     <form action="battlefield.html">
-      <label for="player">Player:</label>
+      <label for="username">username:</label>
       <input
-        type="text"
-        name="username"
-        id="playerInput"
-        placeholder="Enter player name..."
-        required
+      type="text"
+      name="username"
+      id="usernameField"
+      placeholder="Enter username..."
+      required
       />
       <br>
-      <label for="battlefield">Battlefield:</label>
+      <label for="roomname">roomname:</label>
       <input
-        type="text"
-        name="roomname"
-        id="battlefieldInput"
-        placeholder="Enter battlefield name..."
-        required
+      type="text"
+      name="roomname"
+      id="roomnameField"
+      placeholder="Enter battlefield name..."
+      required
       />
-      <button type="submit" id="joinBattleBtn">Start battle</button>
+      <br>
+      <button type="submit" id="join">enter room</button>
     </form>
+
+    <!-- rules -->
+    <article>
+      <h1>The Rules of The Game of War</h1>
+
+      <h2>Preamble</h2>
+
+      <p>This Kriegspiel, or war game, brings into play the operations of twoarmies of equal strength, each seeking, through manœuvre and battle,the destruction of its adversary. Each is at the same time obliged toprotect, within the territory it occupies, the resources needed foreffective campaigning, and to keep its lines of communication open.</p>
+      
+      <p>All the tactical and strategic relationships embodied in the gameare consistent with the principles laid down in Clausewitz’s theory ofwar, grounded in classical eighteenth-century warfare and furtherdeveloped during the periods of the French Revolution and Empire.From this historical model are derived all the conceptions hereadopted: the nature of tactical units, whether mounted or on foot,their conventionally determined offensive and defensive strengths, theproportion of the various types of units within the army as a whole,and the degree of support each may provide.
+
+      <h2>The Territory and the Object of the Game</h2>
+      
+      <p>The game is played on a map-board marked off into five hundredsquares (25 x 20) and divided in half horizontally so as to representtwo opposing territories each ten squares in depth. The two regionsare asymmetrically disposed, but each contains the following: twoarsenal squares, three fort squares, one mountain-pass square, andnine mountain squares. Mountains constitute an absolute barrier totroop movement and completely obstruct fire. Similarly, they block alllines of communication between the armies and their arsenals andcommunications units.</p>
+      
+      <p>Before the start of play, each side or army (“North” and “South”)may deploy its units as it sees fit within its own territory, one unit persquare. This initial deployment must be conceived in ignorance of theadversary’s arrangements, so one or both players should plan out theprecise disposition of their forces on paper in advance.</p>
+      
+      <p>The players toss a coin or draw straws for first turn. A turncomprises the movement of up to five freely chosen fighting or non-combatant units and an attack, once these moves have beencompleted, on an enemy unit within range. There is no obligation todeclare such an attack, however, and a player is at liberty to movefewer than five units during a turn — or indeed to move none at all.</p>
+      
+      <p>The object of each side is the complete destruction of theadversary’s military capability. This may be achieved either by theelimination of all enemy fighting units or by the capture of both enemy arsenals, an arsenal being neutralised the moment it is occupied by anenemy fighting unit.</p>
+
+      <h2>Fighting Units</h2>
+      
+      <p>At the opening of hostilities, each side has fifteen fighting units at itsdisposal, to wit:</p>
+      
+      <ul>
+      <li>9 infantry regiments</li>
+      <li>4 cavalry regiments</li>
+      <li>1 foot-artillery regiment</li>
+      <li>1 mounted-artillery regiment</li>
+      </ul>
+      
+      <p>The rate of advance of units is one square per turn for infantryand foot artillery and two squares per turn for cavalry and mountedartillery. A unit may move in any direction. Units permitted to movetwo squares at a time may do so straight or diagonally; they may alsomove straight for one square and diagonally for the second, or viceversa, the only restriction being that they must move through and intounoccupied squares. These rapid units may also, of course, be movedjust one square per turn if a player so desires.</p>
+      
+      <p>Units possess a specific tactical strength according to type ofarmament, and this strength varies, too, according to whether the unitis in an offensive or a defensive mode. Tactical strength is expressednumerically as a factor determined by a unit’s situation.</p>
+      
+      <p>Thus an infantry regiment has an offensive factor of 4 and adefensive factor of 6. This defensive factor rises to 8 where the unit isin possession of a mountain pass, and to 10 when it is garrisoned in afort.</p>
+      
+      <p>A cavalry regiment has an offensive factor of 7 when charging,which is to say when it is in direct contact with a square occupied bythe enemy unit it is attacking. Its defensive factor is 5, a value that isunaffected when a cavalry unit occupies a pass or a fort. When notcharging, cavalry may serve as attacking infantry, in which event itsoffensive factor is 4.</p>
+      
+      <p>A cavalry charge consists of the combination of the offensiveforce of all four of an army’s cavalry regiments, which must be alignedwithout a break along a series of squares, horizontally, vertically ordiagonally, with, in the leading position, one such unit placed in directcontact with an enemy unit. Charging cavalry may not attack anyenemy unit, of whatever type, that is ensconced in a mountain pass orgarrisoning a fort.</p>
+      
+      <p>An artillery regiment, whether foot or mounted (since thisdifference concerns speed only), has an offensive factor of 5. Its defensive factor is 8, rising to 10 where the unit is in possession of apass, and to 12 when it is occupying a fort.</p>
+      
+      <p>The fire of all units (just like a cavalry charge) travels in straightlines only, along vertical, horizontal or diagonal sequences of squaresradiating from the square occupied by the attacking unit. The range ofartillery, both offensively and defensively, is three squares aligned inany direction. The range of infantry is two squares. The range of acavalry unit operating defensively (or serving as attacking infantry, thatis to say, when not in contact with the square under attack eitherdirectly or via the mediation of a friendly cavalry unit) is also twosquares. The offensive range of cavalry charging together in a singlecolumn may, of course, cover four squares in the case of the rearmostregiment, whose offensive factor is effective as far as the square takenby the leading cavalry unit. But should this leading unit come underimmediate counter-attack, it will have at its disposal (apart from itsown defensive factor) only two of its supporting units, since the fourthwill now be out of range.</p>
+
+      <h2>Tactical Engagement</h2>
+      
+      <p>An attack on an enemy unit consists of the concentration of one’s fire— or, in the case of a cavalry attack, the directing of a charge — uponthe square which that unit is occupying. An attack is carried out by acertain number of one’s own units that have come within range of theenemy unit’s position.</p>
+      
+      <p>First the offensive factors of all units in a position — and withinrange — to attack the targeted unit are added up. Then the defensivefactors of all opposing units in a position — and within range — to fireupon the targeted unit (including that unit itself) are likewise addedup. Where total offensive strength, so arrived at, is inferior or equal tototal defensive strength, the targeted unit resists. Where totaloffensive strength is superior by two or more points, the targeted unitis destroyed; this event entails no obligation upon the attacker tooccupy the position thus vacated. Where total offensive strengthexceeds total defensive strength by just one point, the unit attackedmust abandon its position, and this, obligatorily, as the first of the fivemoves constituting its side’s next turn. Moreover, the dislodged unitmay not contribute as part of that next turn in any attack: in otherwords, its offensive factor does not count even if it is within range ofan enemy unit now under counter-attack. Lastly, where a unit defeatedby one point is unable to vacate its position in this way as the firstmove of its side’s following turn, all surrounding squares beingoccupied by friendly or hostile units, the defeated unit is ipso factodestroyed.</p>
+      
+      <p>The necessity of paying maximum attention to the tacticaldefence of every single unit is imposed by the fact that even a slightly prolonged inferiority in tactical encounter leads to a unilateral attritionof numerical strength. Any such quantitative loss, which is in any caseominous from a strategic standpoint, may moreover quickly turn, onthe tactical plane, as soon as an army’s total offensive strength sinksso low as to preclude all counter-attack, into an irreversible qualitativeinferiority on the battlefront.</p>
+
+      <h2>Communications</h2>
+      
+      <p>All a fighting unit’s offensive and defensive value, and all its mobility,are entirely dependent on the necessity for that unit to remain incommunication with one or another of its army’s arsenals. Suchcommunication includes the transmission of information and orders aswell as the provision of supplies and munitions; it represents theorganic integrity of an army. An arsenal may serve its own side only —it cannot be conquered and used by the adversary; it may, however, bedestroyed so as to deprive the enemy of its use.</p>
+      
+      <p>A unit can neither move nor engage in combat unless it remainson a square which is in communication, either direct or indirect, withone of its own arsenals.</p>
+      
+      <p>Direct communication means first of all that an arsenal canmaintain contact with its side’s forces along any vertical, horizontal ordiagonal straight line radiating out from its own square; such linesmay be of any length, save where mountains interrupt them. Note, forexample, that all forts are positioned on an alignment of squares thatputs them in permanent communication with one of their ownarsenals. In addition, a line of communication may be reorientated,from any square along its trajectory, by a communications unit; such aunit is in effect a forward mobile echelon of the arsenal capable ofredirecting communications for an unlimited distance along anystraight line radiating out from whichever square it currently occupies.A second such unit placed on any square linked in this way to anarsenal by the first unit may further relay communications in preciselythe same way from its own square.</p>
+      
+      <p>At the start of play each side possesses one foot-communications unit capable of advancing one square at a time andone mounted-communications unit capable of moving two squares ata time. These non-fighting units have no offensive factor; theirdefensive factor is 1 and their range is two squares. They constitute arich target in themselves for the adversary, so they need, if isolated, tobe kept out of enemy range, and otherwise to be protected by anadequate number of fighting units. Communications units are the onlyunits capable of movement while out of touch with an arsenal; duringall such movements, however, they have no ability to redirect lines ofcommunication.</p>
+
+      <p>Indirect communication means that each fighting unit remains incommunication with any other fighting units of its own army which arein contact with it, that is to say, which occupy any of the eightimmediately adjacent squares. Communication extends in this fashionto all units of the same army that are in physical contact with eachother. Thus for an army or a detached force each unit of which iscontiguous with at least one other, it is necessary and sufficient thatjust one unit be in direct communication with an arsenal or a relayingcommunications unit.</p>
+      
+      <p>A fighting unit may move into a square where it is no longer incommunication, directly or indirectly, with an arsenal. Once there,however, and so long as no communication is re-established eitherthrough contact with a friendly unit itself in direct or indirect touchwith an arsenal, or else by virtue of the movement of acommunications unit that reopens communication for it, the isolatedunit is condemned to immobility and stripped of all offensive anddefensive capacity. It is defenceless against attack and may bedestroyed at will by any enemy unit stationed (or brought) within firingrange. Note, however, that any friendly unit whose owncommunications are intact and which is within range to providesupporting fire thereby contributes its defensive factor to the defenceof an isolated unit.</p>
+      
+      <p>A line of communication is severed as soon as an enemy unitoccupies any one of its component squares, and remains cut so longas that enemy unit maintains that position.</p>
+      
+      <p>Where a line of communication is thus broken by an interveningenemy unit, it may be restored either directly or indirectly. Directcommunication is re-established if the enemy unit is removed fromthe square it has occupied, whether of the enemy’s own choice orbecause of the unit’s destruction; it is also restored when themovement of friendly communications units manages to reinstitutecontact via a new line of squares unoccupied by the enemy. Indirectcommunication is restored when friendly units whose movements arestill unimpeded manage to link up with the unit or units whosecommunications have been cut by occupying any immediately adjacentsquare.</p>
+      
+      <p>When one side has so well manœuvred as to have cut off all orpart of the enemy forces, at the end of its turn it may attack anddestroy any one of the surrounded units that are within its range, andno resistance can be offered. Resistance cannot be resumed by thesurviving units until such time as their communications have beenrestored. Where a detached force is surrounded by an enemy that hassevered all its available lines of communication, it has but one avenueof hope: an attempt may be made as a last resort to liberate thesurrounded force before it is completely destroyed by means of a relief force made up of friendly troops which have been able elsewhere tomaintain or restore their communications; these rescuing troops mustseek to penetrate the enemy front and so join up with the survivingunits of the surrounded force.</p>
+      
+      <p>In view of the vital importance of communication, strategy inthis game is more often concerned with movement against theadversary’s communications than with either offensive action directedagainst first one and then the other enemy arsenal, or with the wearingdown of enemy strength by means of enduring superiority on thebattlefront.</p>
+      
+      <p>This emphasis also affects tactics, for the order of battleadopted at each moment must take into account not only the bestpositioning for the purposes of defence and counter-attack but alsothe best means of covering one’s lines of communication. It is quitepossible, even before the initial numerical balance of forces is upset,for an army to find itself on an unequal footing with its adversarybecause of a threat to its communications. An army whose battle linesbecome indistinguishable from its lines of communication will quicklylose its tactical manœuvrability in engagements with the enemy, andmay well find itself partly or completely surrounded. The destructionof a single unit can mean broken communications for a portion of anarmy, and this portion will be lost unless contact can be restored. Thusthe outcome of a tactical engagement over just one square may havemajor strategical consequences.</p>
+      
+      <p>While it is true that possession of only one of its two arsenals isa necessary and sufficient condition for an army to fight and win, it isnevertheless desirable that both arsenals be preserved for as long aspossible, because on occasion this allows for a shift in the operationalorientation of the entire force, and because it may help co-ordinatethe movements of forces operating from different bases.</p>
+
+      <h2>Sundry Conventions</h2>
+      
+      <p>The elimination of an arsenal is treated like an attack. Hence, whenone side occupies an enemy arsenal as one of the five moves of itsturn, that turn may not include the declaration of an attack on anyother square. An arsenal may be eliminated solely by virtue of itsoccupation, and it may be occupied only if it is no longer held by anenemy unit. When an arsenal is held by an enemy unit, therefore, thatunit must first be destroyed; only at the next turn may the arsenal thusvacated be invested.</p>
+      
+      <p>Communications units, having no offensive strength, cannoteliminate an arsenal by occupying it. Similarly, unlike fighting units, communications units do not block enemy lines of communicationeven when they are placed on squares along those lines.</p>
+      
+      <p>A cavalry unit occupying a fort cannot attack by charging solong as it remains there. Cavalry in possession of a mountain pass,however, may charge directly from that position.</p>
+      
+      <p>Arsenal squares are treated exactly like all other squares in theplain, and they place no obligations or constraints upon the tacticalemployment of units.</p>
+      
+      <p>A fort, regardless of ownership at the start of play, serveswhichever side is in possession of it: as soon as an enemy unit seizes afort, the advantage it affords in tactical defence passes entirely intothe hands of the new occupant. Unlike arsenals, forts are neverdestroyed, and they may change hands several times in the course ofhostilities.</p>
+      
+      <p>The territory the greater part of whose mountains areperpendicular to the frontier is called “the North”. The territory thegreater part of whose mountains are horizontal to the frontier is called“the South”.</p>
+      
+      <p>Should both sides, by reason of extensive reciprocal attrition, orfor whatever reason, simultaneously abandon all offensive movement,they may agree without further ado to declare the game drawn.</p>
+      
+      <h2>The Conduct of War</h2>
+      
+      <p>This war game — like war itself and like all forms of strategic thoughtand action — tends to demand the simultaneous consideration ofcontradictory requirements.</p>
+      
+      <p>Each side, in so far as it has managed to preserve its freedom ofmanœuvre, is obliged to choose between operations for theundertaking of which the means available are bound to be wanting, insome respect or another, in terms of space and time.</p>
+      
+      <p>In spatial terms, neither side, so long as the initial balance offorces has not been upset, ever has enough troops either to protectitself at every point where protection is called for, or to attack andnourish its offensives wherever it might wish, or even to respondadequately where the enemy has forced its hand. In terms of time, anarmy’s movements are never as rapid as one would wish: less than athird of the forces available at the outset may be moved in one turn (aconsideration corresponding to the “friction” that slows down allmovement in real warfare: the time for orders to be transmitted, theinevitable delays in their execution, etc.). A choice must often be madebetween an early arrival with few troops, or a later one with more, at the place where an engagement will occur. Urgent necessities such asthe moving up of reinforcements or the repositioning ofcommunications units are imposed for tactical reasons as soon as anengagement is initiated, for, though the maximum number of unitsmust be thrown into battle, at the same time these units have to beguaranteed the best possible support against the enemy’s next move,while units left isolated following earlier enemy action may need to bepulled back.</p>
+      
+      <p>Each army must strive to keep the initiative, compensating forshortfalls in troop strength by the speed with which it can concentrateits forces at a decisive point where it must be the stronger: strategicmanœuvres succeed only when victory yields an immediate return, soto speak, in terms of tactical confrontation. Defensive play is strongerper se, both tactically and strategically, but only offensive — or at leastcounter-offensive — moves can achieve positive successes.</p>
+      
+      <p>Forces on the defensive cannot remain static, save temporarilyon some highly local position. Rather, they must develop the means ofcounter-attack. Offensive operations, as they evolve, always tendtowards a climactic point, as when superior forces are encounteredwhich compel reversion to the defensive, or when an enemy counter-movement begins to threaten a line of communication stretched thin.Such a counter-movement may itself be countered, either by directdefensive action on the part of friendly units barring access to thevulnerable line of communication or by an indirect defence threateningthe flank of the counter-attacking forces. The limits to suchcombinations are set by lack of the forces and the time required toexecute specific movements.</p>
+      
+      <p>It is naturally highly desirable to extend one’s front and threatenthe enemy’s flanks and rear, yet at the same time the concentration oftroops for battle is of the utmost necessity. The enemy’s defeat in amajor battle is the most direct route to victory in the whole campaign,because the likely upshot is that the enemy will lose its entire army orat least be put at an irreversible numerical disadvantage. When aconcentrated army interposes itself between two separated enemyforces, the likely outcome is that one of those forces will be destroyedwithout the other being able to come to its aid; and an army that isstill unified but overextended along a narrow line is liable tobreakthrough, which leads to the same prospect.</p>
+      
+      <p>It makes sense to move against the enemy’s communications,but one’s own will be stretched in the process, and their protectionmust also be considered. If such a movement is entrusted to adetached force it must possess enough offensive and defensivestrength to oblige the enemy to commit a substantial portion of itsforces to engaging it. But over-reinforcement of such a detached forcewill dangerously diminish the capacity for tactical resistance of the main body, which is the pivot of manœuvre. Since any detached forceshould exist as such for the shortest time possible, and since as astrategic threat speed is its most effective asset, it will normally bemade up of mounted units. Such rapid units, however, are also theshock troops which the main body of an army cannot completely dowithout in battle (assuming that the enemy’s are still intact). Mountedtroops, moreover, though strong in attack, are weak in defence ifengaged by the enemy and cornered without benefit of infantrysupport; sending infantry along with them, however, will slow themdown. This problem is aggravated by the fact that the armies in thefield are both very small — as small, in fact, as is compatible with theflexibility needed by fighting forces for manœuvre and battle. It is thissmall size of the armies, dwarfed by a vast territory, which justifies theuse of the detached forces that in such circumstances can achievedecisive successes. The risks are great, however, for neither army canengage in battle under favourable conditions if it cannot count on thecombined support of its three arms.</p>
+      
+      <p>Similarly, when two completely grouped armies are engaged intactical confrontation, it is advantageous to manœuvre on one of anenemy’s flanks in order either to close on their line of communicationor to bring concentrated fire to bear on one wing of their forces bymeans of an enveloping movement. Unfortunately, this may also serveas a cue for the enemy to effect the very same movement on the otherwing, for flanking movements inevitably expose one’s own oppositeflank: the flanker will be flanked.</p>
+      
+      <p>That portion of an army which, after being bettered in a localengagement, finds itself too weak — or on the point of becoming tooweak — to launch further counter-attacks, will retreat with a view toconcentrating its forces; or else it may withdraw in the direction ofreinforcements, or towards a stronger position — crossing a pass, forexample, or seeking the protection of a fort. The victorious army,meanwhile, will pursue the defeated portion of the enemy forces so asto maximise the losses that it is bound to continue inflicting uponthem until they recover. Still, the victors can move only five units perturn, so that pursuing forces that remain in contact or within range ofthe retreating army must beware of prolonging engagement beyondthe culminating point after which they will be at risk of counter-attackfrom an enemy that has now regained superiority in terms ofconcentration and seeks to regain the initiative at the earliest possiblemoment. There is thus a correct moment for abandoning the tacticalexploitation of a successful engagement and proceeding immediatelyto its strategic exploitation — to operations, say, against enemyarsenals or lines of communication, taking advantage of the situationthat has been created by the opponent’s retreat and new numericalinferiority (since enemy losses have necessarily exceeded one’s ownever since the tide of battle turned against the adversary).</p>
+
+      <p>In this war game, the number of obviously ill-adviseddispositions of forces and manœuvres is very great; yet even amongmoves that may be considered well chosen, none, so long at least as areasonable balance of forces and positions still exists, is assured ofsuccess. Success or failure will depend in every case on the action (orinaction) of the adversary. Some measure of carelessness is bound tobe a factor on either side, while the most elaborate plans remainlargely subordinate to the changes wrought by a succession ofunpredictable responses from the opponent, and by the reactions theyin turn evoke, all more or less finely judged — and, most importantly,all more or less successfully executed. The interaction between tacticsand strategy is a continual source of surprises and reverses — and thisoften right up until the last moment. Though the basic principles arecertain, their application is always a matter of doubt.</p>
+      
+      <p>This is a war of movement, albeit one arrested at times on astatic front, as in the case of the defence of a mountain pass or fort. Awar in which territory per se is of no interest: the sole concern is withthe tactical or strategic positions that are necessary to an army ordeleterious to its adversary. On occasion victory may be achievedwithout a major battle, even almost without skirmishes, on the basis ofmanœuvre alone. Sometimes, too, everything may be decided by asingle frontal clash without any manœuvring at all. These extremecases aside, however, the typical chain of events involves a series ofmovements, engagements, a major battle, renewed manœuvring, andso on. Within the main battle, manœuvre almost always takes theforms of envelopment, retreat, and actions against enemycommunications. It behoves an army not to be too sparing of troops ormovement, nor yet to squander them. A player who would keep all willlose all. But players who blithely allow themselves to lose more thantheir opponent will not be able to contain that opponent.</p>
+      
+      <h2>Some Under-Represented or Absent Factors</h2>
+      
+      <p>The reader’s grasp of the full possibilities of this Kriegspiel may beenhanced by some mention of its chief limitations.</p>
+      
+      <p>First of all, any attempt such as the present one to apply thegeneral theory of war in abridged form must imply some voluntaryhistorical limits. Thus we are not concerned here with war as waged inAntiquity, nor with feudal warfare, nor with modern war and thetransformations it has undergone since the mid-nineteenth centurywith the introduction of railways, machine-guns, tanks, motorisation,aviation, rockets and so forth.</p>
+      
+      <p>Three basic and universal aspects of real warfare are absent orunder-represented in the game: regrettably, it is hard to incorporatethem into a confrontation that takes place on a flat chequered surfaceand permits of no intervention by external chance factors. These three considerations are, first, weather conditions and the alternation ofnight and day; secondly, the morale and degree of fatigue of troops;and, thirdly, uncertainty with regard to enemy positions andmovements.</p>
+      
+      <p>The Kriegspiel proceeds under temporal conditions that nevervary: war pursued under a kind of solstice where climate never takes ahand and night never falls before hostilities are definitively concluded.This is the game’s main shortcoming when it is compared with reality,but one that could not be mitigated without a loss of rigour in theschematic representation of the overall agonistic process.</p>
+      
+      <p>Troop morale and fatigue are taken into account onlymarginally: they are reflected to a degree in the instant paralysis offighting strength afflicting all units whose communications are cut(including units garrisoning forts, which here have no stopping power,and serve the purpose of tactical support alone). In this regard, ananalogy might more readily be drawn with the armies of the SevenYears’ War, so tightly dependent on magazines and convoys, than withthose of the French Revolution. The quantitative constraints upon theforces available, their irreplaceability and hence their peculiarpreciousness, are other features of this war game that are more akinto the military realities of the former period. Factors of morale arefurther reflected, perhaps, in the offensive strength embodied in thedeep range of charging cavalry; as Ardant du Picq clearlydemonstrated, the impact of such action in real combat could not bereckoned by simply multiplying mass by speed. As for the morale ofgenerals, and the mental wear and tear affecting the leadership thathas always counted for so much in war, it may be said, in contrast tothe aforementioned factors, to be very much in evidence here, andliable considerably to affect play. One is often led to overestimate theconsequences of movements initiated by one’s adversary, even thoughthey may be feints. There is simply no way of obtaining cast-ironcertainty as to what should be done, and this holds true even aftercrushing numerical superiority has been achieved, for there arecircumstances in which a seemingly defeated army may still launchdecisive actions against its opponent’s communications.</p>
+      
+      <p>Lastly, it should be pointed out that this game falls far short ofbeing a complete representation of real warfare in that it leaves noroom for doubt about the enemy’s positions and movements. Anadversary’s initial order of battle, admittedly, is unknown; but theopponent has a limited number of zones of concentration from whichto make reasonable choices, and so it is prudent to follow suit. Fromthe moment hostilities open, exact and certain knowledge of all enemymovements is vouchsafed instantly. To borrow the words of an oldFrench proverb, L’ost sait ce que fait l’ost : each army knows what theother army is doing (the cavalry thus has no scouting function: its roleis restricted to attack, pursuit and raiding).</p>
+
+      <p>With these reservations, we may say that this game accuratelyportrays all the factors at work in real war, and, more generally, thedialectics of all conflict.</p>
+    </article>
   </main>
+
   <footer>
   </footer>
+  <script src="js/uuid.js"></script>
 </body>
 </html>

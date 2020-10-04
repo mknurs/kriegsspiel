@@ -2,6 +2,7 @@ const path = require("path");
 const http = require("http");
 const express = require("express");
 const socketio = require("socket.io");
+const uuidv4 = require("uuid")
 
 const {
   ROWS,
@@ -12,9 +13,13 @@ const {
 
 const {
   distance,
+  inRange,
   aggregateStats,
   radiateArsenals,
   radiateLines,
+  resetStats,
+  resetAggregate,
+  resetOnline,
 } = require("./utils/utils");
 
 const {
@@ -24,23 +29,24 @@ const {
   canMove,
   canAttack,
   place,
+  action,
   move,
   attack
 } = require("./utils/actions");
 
 const {
-  Arsenal,
+  playerA,
+  playerB,
+  initString,
+  makeBoard,
   Relay,
   SwiftRelay,
   Infantry,
   Cavalry,
   Cannon,
   SwiftCannon
-} = require("./utils/units");
-
-const {
-  board
 } = require("./utils/board");
+const actions = require("./utils/actions");
 
 const app = express();
 const server = http.createServer(app);
@@ -51,71 +57,74 @@ app.use(express.static(path.join(__dirname, "public")));
 
 const state = {};
 
-function newGameState() {
+function newGameState(roomname) {
   return {
+    name: roomname,
     battle: false,
     turn: true,
-    players: [],
+    playerA: {...playerA},
+    playerB: {...playerB},
     spectators: [],
-    board: board,
-    units: [Arsenal, Arsenal, Relay, Relay, Infantry, Cavalry, Cannon, SwiftCannon],
+    board: makeBoard(initString),
+    units: [ { unit: Relay, name: "relay" }, { unit: SwiftRelay, name: "swift relay" }, { unit: Infantry, name: "infantry" }, { unit: Cavalry, name: "cavalry" }],
+    moves: 5,
+    attacks: 1,
     selected: null,
     targeted: null,
   };
 }
 
 function emitStateToRoom(state, room) {
-  // calculate comms
-  state.players.forEach(
-    (player) => {
-      let id = player.id;
-      radiateLines(id, state)
-    }
-  )
-  // radiateArsenals(state)
-  // calculate aggregate stats
-  aggregateStats(state)
+  // reset aggregate stats and online squares
+  resetAggregate(state);
+  resetOnline(state);
 
-  io.sockets.in(room)
-    .emit("state", JSON.stringify(state));
+  // calculate comms
+  radiateLines(state.playerA.turn, state);
+  radiateLines(state.playerB.turn, state);
+
+  // calculate aggregate stats
+  aggregateStats(state);
+
+  // emit state
+  io.to(room).emit("state", JSON.stringify(state));
 }
 
 // run when client connects
 io.on("connection", client => {
   console.log("a user connected");
+  io.emit("uuid", uuidv4())
 
   client.on("disconnect", () => {
     console.log("user disconnected")
   });
 
   client.on("join", handleJoin);
-  client.on("click", handleClick)
+  client.on("click", handleClick);
+  client.on("btnClick", handleBtnClick);
 
   // handlers
   function handleJoin({ username, roomname }) {
     client.join(roomname);
+    if (!state[roomname]) {
+      state[roomname] = {...newGameState(roomname)}
+    }
 
-    const user = {
-      id: client.id,
-      name: username,
-      room: roomname
-    };
-    const room = io.sockets.adapter.rooms[roomname];
-    let users = room.sockets;
-    let numUsers = Object.keys(users).length
+    emitStateToRoom(state[roomname], roomname);
 
-    if (numUsers === 1) {
-      user.turn = true;
-      user.color = "blue";
-      user.placedUnits = 0;
-      state[roomname] = newGameState();
-      state[roomname].players.push(user);
-    } else if (numUsers === 2) {
-      user.turn = false;
-      user.color = "purple";
-      user.placedUnits = 0;
-      state[roomname].players.push(user);
-    } else if (numUsers > 2) {
+    if (!state[roomname].playerA.id) {
+      // let player = state[roomname].playerA;
+      state[roomname].playerA.id = client.id;
+      state[roomname].playerA.name = username;
+    } else if (!state[roomname].playerB.id) {
+      // let player = state[roomname].playerB;
+      state[roomname].playerB.id = client.id;
+      state[roomname].playerB.name = username;
+    } else {
+      let user = {
+        id: client.id,
+        name: username,
+      }
       state[roomname].spectators.push(user);
     }
 
@@ -124,54 +133,79 @@ io.on("connection", client => {
 
   function handleClick({ username, roomname, i, j }) {
     let gameState = state[roomname];
-    let player = gameState.players.find(player => player.name === username);
-    let enemy = gameState.players.find(player => player.name != username);
-    let cell = { i, j };
+    let player;
+    let enemy;
+    gameState.playerA.name == username ?
+      (player = gameState.playerA, enemy = gameState.playerB) :
+      (player = gameState.playerB, enemy = gameState.playerA);
 
+    player.selected = { i, j };
+
+    if (
+      gameState.battle &&
+      ((gameState.playerA.name == username && gameState.playerA.turn == gameState.turn) ||
+      (gameState.playerB.name == username && gameState.playerB.turn == gameState.turn))
+    ) {
+      !gameState.selected ?
+        gameState.selected = { i, j } :
+        gameState.targeted = { i, j }
+
+      if (gameState.targeted) {
+        action(gameState, player)
+      }
+    }
+
+    // placing units
+    /*if (
+      !gameState.battle &&
+      gameState.selected &&
+      canPlace(gameState, player)
+    ) {
+      place(gameState, player);
+    }*/
     if (
       !gameState.battle &&
-      canPlace(gameState, player, cell)
+      player.units < gameState.units.length
     ) {
-      place(gameState, player, cell);
+      gameState.selected = { i, j };
+      place(gameState, player);
     }
 
-    if (
-      gameState.battle &&
-      canSelect(gameState, player, cell)
-    ) {
-      select(gameState, cell);
+    // deselect if action failed
+    if (gameState.selected && gameState.targeted) {
+      gameState.selected = null;
+      gameState.targeted = null;
     }
-
-    if (
-      gameState.battle &&
-      canMove(gameState, player, cell)
-    ) {
-      move(gameState, cell)
-    }
-
-    if (
-      gameState.battle &&
-      canAttack(gameState, player, cell)
-    ) {
-      attack(gameState, cell)
-    }
-
-    if (
-      !gameState.battle &&
-      player.placedUnits === gameState.units.length &&
-      enemy &&
-      enemy.placedUnits === gameState.units.length
-    ) {
-      gameState.battle = !gameState.battle;
-    }
-
     emitStateToRoom(gameState, roomname)
   }
 
+  function handleBtnClick({ username, roomname }) {
+    let gameState = state[roomname];
+    let player;
+    let enemy;
+    gameState.playerA.name == username ?
+      (player = gameState.playerA, enemy = gameState.playerB) :
+      (player = gameState.playerB, enemy = gameState.playerA);
+
+    if (!gameState.battle) {
+      player.ready = true;
+      if (player.ready && enemy.ready) {
+        gameState.battle = true;
+        const rand = Math.random() < 0.5;
+        gameState.turn = rand;
+      }
+      emitStateToRoom(gameState, roomname);
+    } else {
+      gameState.turn = !gameState.turn;
+      emitStateToRoom(gameState, roomname);
+    }
+  }
 
 
 })
 
 const PORT = 3000 || process.env.PORT;
 
-server.listen(PORT, () => console.log(`Server running on port ${PORT}.`))
+server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// server.listen()
